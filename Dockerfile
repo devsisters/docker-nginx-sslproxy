@@ -6,6 +6,7 @@
 
 # Pull base image.
 FROM dockerfile/ubuntu
+MAINTAINER Devsisters SE team <se@devsisters.com>
 
 # Install Nginx.
 RUN \
