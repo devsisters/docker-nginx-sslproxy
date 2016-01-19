@@ -32,19 +32,26 @@ rm -rf /etc/nginx/sites-enabled/*
 cat <<EOF > /etc/nginx/sites-enabled/sslservice
 # HTTPS server
 server {
-    listen 443;
+    listen 443 ssl;
     server_name localhost;
 
     # disable any limits to avoid HTTP 413 for large image uploads
     client_max_body_size 0;
 
+    # Docker headers
+    add_header Docker-Distribution-Api-Version registry/2.0 always;
+
     # required to avoid HTTP 411: see Issue #1486 (https://github.com/docker/docker/issues/1486)
     chunked_transfer_encoding on;
 
     # Docker uses host header for proper URL redirects (https://github.com/docker/docker-registry/issues/69)
-    proxy_set_header Host \$http_host;
+    proxy_set_header Host \$host;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_set_header X-Original-URI \$request_uri;
+    proxy_set_header Docker-Distribution-Api-Version registry/2.0;
 
-    ssl on;
     ssl_certificate /cert/cert.pem;
     ssl_certificate_key /cert/cert.key;
 

@@ -5,10 +5,12 @@
 #
 
 # Pull base image.
-FROM dockerfile/ubuntu
+FROM ubuntu:14.04
 MAINTAINER Devsisters SE team <se@devsisters.com>
 
 # Install Nginx.
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y install python-software-properties && DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
+
 RUN \
   add-apt-repository -y ppa:nginx/stable && \
   apt-get update && \
